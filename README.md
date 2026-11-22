@@ -1,104 +1,69 @@
-# RogersMarketPlaceApp
+Markdown
 
+# 🛍️ RogersMarketPlaceApp
 
-## Performance Benchmarks & Resource Considerations (200 Listings)
+An **offline-first marketplace iOS application** built with **SwiftUI**, **Combine**, **Swift Concurrency**, and **MVVM** architecture.
 
-### Measured CPU & Memory Profile (Xcode Debug Navigator)
-Tested with **200 seeded listings** under rapid scrolling, live search filtering, and offline favorite toggling:
+The application allows users to browse marketplace listings, search items, add new listings locally using the photo library or camera, toggle favorites, persist data locally to JSON, and synchronize pending changes when network connectivity is available.
 
-| App State | CPU Usage | Behavior & Explanation |
-| :--- | :--- | :--- |
-| **Cold Launch (Initial Seed)** | ~105% (brief burst < 0.3s) | One-time initialization of SwiftUI hierarchy, JSON seeding (`200` records), and initial `List` layout pass across cores. |
-| **Idle (Feed Displayed)** | **0%** | Zero background polling; Combine `NWPathMonitor` and `List` remain completely dormant until user input or network state change occurs. |
-| **Active Scrolling & Search** | **2% – 24%** (avg ~8%) | Lightweight main-thread
+## ✨ Features
 
-### Measured CPU & Memory Profile (Xcode Debug Navigator)
-Tested with **200 seeded listings** under rapid scrolling, live search filtering, and offline favorite toggling:
+- 📦 Product listing feed with pull-to-refresh (`refreshable`) and live search (`searchable`)
+- ➕ Add new listings locally (requires at least 2 non-whitespace characters in the title)
+- ❤️ Favorite / unfavorite listings with automatic sorting (favorites first, then most recently updated)
+- 💾 Local JSON persistence via `LocalStorage` in the Documents directory (`listings.json`)
+- 🔄 Offline queuing and automatic/manual synchronization of `.pending` items with `DummyJSONAPIService`
+- 🌐 Real-time network reachability monitoring via `NetworkMonitor` (`NWPathMonitor` + periodic Apple connectivity probe)
+- 📴 Offline seeding of 200 fallback listings (`Marketplace Item #1`–`#200`) when starting offline with no saved listings
+- 🖼️ Photo selection via `PhotosPicker` and camera capture via `CameraPicker` (`NSCameraUsageDescription` configured in `Info.plist`)
+- ⚡ Two-tier thumbnail caching (`NSCache` in-memory + `Caches` directory on disk, resized to `300x300` JPEG at `0.7` quality) via `ImageStore`
 
-| App State | CPU Usage | Memory Usage | Behavior & Explanation |
-| :--- | :--- | :--- | :--- |
-| **Cold Launch (Initial Seed)** | ~105% (brief burst < 0.3s) | **~48.5 MB** | One-time initialization of SwiftUI hierarchy, JSON seeding (`200` records), and initial `List` layout pass across cores. |
-| **Idle (Feed Displayed)** | **0%** | **~48.5 MB** | Zero background polling; Combine `NWPathMonitor` and `List` remain completely dormant until user input or network state change occurs. |
-| **Active Scrolling & Search** | **2% – 24%** (avg ~8%) | **Up to ~68 MB** (~19.5 MB delta) | Lightweight main-thread diffing for visible cells, in-memory search filtering, and cached `300x300` thumbnails as rows are scrolled. |
+## 🛠 Tech Stack
 
----
+| Technology | Usage |
+| :--- | :--- |
+| **Swift** | Primary programming language |
+| **SwiftUI** | User interface (`ContentView`, `AddListingScreen`, `CameraPicker`) |
+| **Combine** | Reactive connectivity updates (`CurrentValueSubject`) and `ObservableObject` state |
+| **Swift Concurrency** | `async`/`await`, `Task`, and `AsyncStream` for network calls, image loading, and monitoring |
+| **Network (`NWPathMonitor`)** | Path change notifications combined with `URLSession` connectivity checks |
+| **PhotosUI & UIKit** | `PhotosPicker` and `UIImagePickerController` camera wrapper |
+| **NSCache & FileManager** | In-memory and disk thumbnail caching plus JSON file persistence |
 
-### Memory Considerations
-- **Tight Footprint (~48.5 MB – 68 MB):** Even with 200 listings and active scrolling, peak memory stays around **68 MB**—well below iOS memory limits for background/foreground apps.
-- **Bounded Growth via `NSCache` & Thumbnailing:** Images are downsampled to `300x300` JPEGs on save (`ImageStore.saveImage`) and capped at `100` items in `NSCache`, preventing unbounded memory growth as more listings or photos are added.
+## 📂 Project Structure
 
+- `Listing.swift` — `Listing` model (`Identifiable`, `Codable`, `Equatable`) and `SyncStatus` enum (`.synced`, `.pending`)
+- `AppServices.swift` — `ListingStorageProtocol`, `LocalStorage` (`listings.json`), and `ImageStore` (memory & disk thumbnail cache)
+- `NetworkService.swift` — `APIError`, `MarketplaceAPIProtocol`, `NetworkMonitoring`, `NetworkMonitor`, and `DummyJSONAPIService` (`https://dummyjson.com`)
+- `MarketplaceVM.swift` — `@MainActor` `MarketplaceVM` handling local CRUD/favorites, search filtering, offline seeding, and remote sync/merge logic
+- `ContentView.swift` — Main marketplace screen with connectivity banner, searchable list, pull-to-refresh, favorite toggles, and `RemoteThumbnailView`
+- `AddListingScreen.swift` — Sheet form for creating a listing with title validation, `PhotosPicker`, and camera access
+- `CameraPicker.swift` — `UIViewControllerRepresentable` wrapper around `UIImagePickerController` (`.camera`)
 
-### System Architecture Diagram
-flowchart TB
-    subgraph UI["SwiftUI View Layer (@MainActor)"]
-        CV["ContentView<br/>(List, Search, Sync Banner)"]
-        ALS["AddListingScreen<br/>(Title, PhotoPicker / Camera)"]
-        IP["ImagePicker<br/>(UIImagePickerController)"]
-    end
+## 🏗️ Architecture
 
-    subgraph VM["ViewModel Layer (@MainActor)"]
-        MVM["MarketplaceVM : ObservableObject<br/>• listings: [Listing]<br/>• searchText: String<br/>• isOnline: Bool<br/>• addListing(), toggleFavorite()<br/>• syncNow(), mergeRemote()"]
-    end
+The app follows **MVVM** with protocol-oriented service dependencies injected into `MarketplaceVM`:
 
-    subgraph Protocols["Dependency Injection Protocols"]
-        SP["ListingStorageProtocol"]
-        AP["MarketplaceAPIProtocol"]
-        NP["NetworkMonitoring"]
-    end
+```text
+SwiftUI Views (ContentView, AddListingScreen, CameraPicker)
+       │
+       ▼
+MarketplaceVM (@MainActor, ObservableObject)
+   ├── ListingStorageProtocol ──▶ LocalStorage (Documents/listings.json)
+   ├── MarketplaceAPIProtocol ──▶ DummyJSONAPIService ([https://dummyjson.com](https://dummyjson.com))
+   ├── NetworkMonitoring      ──▶ NetworkMonitor (NWPathMonitor + HEAD probe)
+   └── ImageStore.shared      ──▶ NSCache + Caches directory (300x300 thumbnails)
 
-    subgraph Infra["Concrete Services & Persistence"]
-        LS["LocalStorage<br/>Documents/listings.json"]
-        IS["ImageStore (Singleton)<br/>NSCache (100) + Caches/*.jpg"]
-        NM["NetworkMonitor<br/>NWPathMonitor → CurrentValueSubject"]
-        API["MockAPIService (actor)<br/>serverDB + Last-Write-Wins"]
-    end
+## ⚡ Performance (200 Listings)
 
-    CV -->|"observes @Published / calls intents"| MVM
-    ALS -->|"calls addListing()"| MVM
-    ALS -->|"presents"| IP
+Tested with **200 listings** (including offline fallback seeding of `Marketplace Item #1`–`#200` and remote/cached thumbnails) while monitoring CPU and memory usage in Xcode:
 
-    MVM -.->|"depends on"| SP
-    MVM -.->|"depends on"| AP
-    MVM -.->|"depends on"| NP
+- **CPU Behavior:** Spiked initially to **~85%** on launch/sync/image decoding, briefly dropped to **0%** when idle, and fluctuated between **37%–97%** (e.g., `94%`, `95%`, `40%`, `59%`, `47%`, `37%`, `97%`) during active scrolling, remote thumbnail fetching, and thumbnail decoding.
+- **Memory Footprint:** Started at **~30.6 MB** on launch and scaled gradually up to **~72 MB** (`37.8 MB` → `41.7 MB` → `46.7 MB` → `53.6 MB` → `69 MB` → `71 MB` → `72 MB`) as thumbnails were loaded, downsampled, and cached across scrolling.
 
-    LS -.->|"conforms"| SP
-    API -.->|"conforms"| AP
-    NM -.->|"conforms"| NP
+### Memory & CPU Considerations in Code
 
-    MVM -->|"saveImage / loadImage"| IS
-
-
-### Sequence Diagram — Offline Creation & Auto-Sync on Reconnect
-sequenceDiagram
-    autonumber
-    actor User
-    participant View as AddListingScreen / ContentView
-    participant VM as MarketplaceVM (@MainActor)
-    participant Img as ImageStore
-    participant Storage as LocalStorage
-    participant Net as NetworkMonitor
-    participant API as MockAPIService (actor)
-
-    Note over User,API: Phase 1 — Offline Listing Creation
-    User->>View: Enter title, pick/capture photo, tap Save
-    View->>VM: addListing(title:image:)
-    opt Image Provided
-        VM->>Img: saveImage(uiImage)
-        Img-->>VM: filename.jpg (300x300 JPEG cached + disk)
-    end
-    VM->>VM: Insert Listing(syncStatus: .pending, updatedAt: .now)
-    VM->>Storage: save(listings) -> listings.json
-    Note over VM: isOnline == false -> skips immediate syncNow()
-    VM-->>View: @Published listings updates UI
-
-    Note over User,API: Phase 2 — Connectivity Restored & Auto-Sync
-    Net-->>VM: isOnline.send(true) via Combine sink
-    VM->>VM: Update isOnline = true; spawn Task { await syncNow() }
-    VM->>API: sync(items: pendingItems)
-    activate API
-    API->>API: Simulate 400ms latency & apply Last-Write-Wins
-    API-->>VM: Return server items (syncStatus = .synced)
-    deactivate API
-    VM->>VM: mergeRemote(remoteItems) (Last-Write-Wins)
-    VM->>Storage: save(listings) -> listings.json
-    VM-->>View: @Published listings refreshes UI (synced state)
+- **Thumbnail Downsampling (`ImageStore`):** Full-resolution images from `PhotosPicker`, `CameraPicker`, or network responses are downsampled to `300x300` (`preparingThumbnail(of:)`) and compressed as JPEG (`0.7` quality) before caching or writing to disk, preventing large raw bitmaps from inflating memory.
+- **Bounded In-Memory Cache + Disk Cache (`ImageStore`):** Uses `NSCache` (capped at `100` items) so iOS can evict cached images under memory pressure, paired with disk caching in `Caches` so thumbnails don't need to be re-downloaded repeatedly.
+- **Atomic & Pre-Sized Collection Operations:** `LocalStorage.save(_:)` writes `listings.json` atomically via `Data.write(to:options: .atomic)`, and `DummyJSONAPIService.sync(items:)` uses `reserveCapacity(items.count)` to avoid repeated array reallocations.
+- **Asynchronous Network & Image Work:** Remote product fetches, sync calls, and remote thumbnail downloads run asynchronously (`async`/`await` and view `.task(id:)`) rather than blocking the main thread.

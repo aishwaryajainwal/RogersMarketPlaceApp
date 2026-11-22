@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		E6CDDB3330B1B6E8001557C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E6CDDAEA30AF25B2001557C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E6CDDAF130AF25B2001557C9;
+			remoteInfo = RogersMarketPlaceApp;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		E6CDDAF230AF25B2001557C9 /* RogersMarketPlaceApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RogersMarketPlaceApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6CDDB2F30B1B6E8001557C9 /* RogersMarketPlaceAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RogersMarketPlaceAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +27,22 @@
 			path = RogersMarketPlaceApp;
 			sourceTree = "<group>";
 		};
+		E6CDDB3030B1B6E8001557C9 /* RogersMarketPlaceAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RogersMarketPlaceAppTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		E6CDDAEF30AF25B2001557C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E6CDDB2C30B1B6E8001557C9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				E6CDDAF430AF25B2001557C9 /* RogersMarketPlaceApp */,
+				E6CDDB3030B1B6E8001557C9 /* RogersMarketPlaceAppTests */,
 				E6CDDAF330AF25B2001557C9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				E6CDDAF230AF25B2001557C9 /* RogersMarketPlaceApp.app */,
+				E6CDDB2F30B1B6E8001557C9 /* RogersMarketPlaceAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +95,29 @@
 			productReference = E6CDDAF230AF25B2001557C9 /* RogersMarketPlaceApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E6CDDB2E30B1B6E8001557C9 /* RogersMarketPlaceAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E6CDDB3530B1B6E8001557C9 /* Build configuration list for PBXNativeTarget "RogersMarketPlaceAppTests" */;
+			buildPhases = (
+				E6CDDB2B30B1B6E8001557C9 /* Sources */,
+				E6CDDB2C30B1B6E8001557C9 /* Frameworks */,
+				E6CDDB2D30B1B6E8001557C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E6CDDB3430B1B6E8001557C9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				E6CDDB3030B1B6E8001557C9 /* RogersMarketPlaceAppTests */,
+			);
+			name = RogersMarketPlaceAppTests;
+			packageProductDependencies = (
+			);
+			productName = RogersMarketPlaceAppTests;
+			productReference = E6CDDB2F30B1B6E8001557C9 /* RogersMarketPlaceAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +130,10 @@
 				TargetAttributes = {
 					E6CDDAF130AF25B2001557C9 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					E6CDDB2E30B1B6E8001557C9 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = E6CDDAF130AF25B2001557C9;
 					};
 				};
 			};
@@ -100,12 +152,20 @@
 			projectRoot = "";
 			targets = (
 				E6CDDAF130AF25B2001557C9 /* RogersMarketPlaceApp */,
+				E6CDDB2E30B1B6E8001557C9 /* RogersMarketPlaceAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E6CDDAF030AF25B2001557C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E6CDDB2D30B1B6E8001557C9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +182,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E6CDDB2B30B1B6E8001557C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E6CDDB3430B1B6E8001557C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E6CDDAF130AF25B2001557C9 /* RogersMarketPlaceApp */;
+			targetProxy = E6CDDB3330B1B6E8001557C9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		E6CDDAFB30AF25B3001557C9 /* Debug */ = {
@@ -250,6 +325,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Take photos of items to list in the marketplace.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -292,6 +368,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Take photos of items to list in the marketplace.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -323,6 +400,51 @@
 			};
 			name = Release;
 		};
+		E6CDDB3630B1B6E8001557C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.infosys.RogersMarketPlaceAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RogersMarketPlaceApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RogersMarketPlaceApp";
+			};
+			name = Debug;
+		};
+		E6CDDB3730B1B6E8001557C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.infosys.RogersMarketPlaceAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RogersMarketPlaceApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RogersMarketPlaceApp";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -340,6 +462,15 @@
 			buildConfigurations = (
 				E6CDDAFE30AF25B3001557C9 /* Debug */,
 				E6CDDAFF30AF25B3001557C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E6CDDB3530B1B6E8001557C9 /* Build configuration list for PBXNativeTarget "RogersMarketPlaceAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E6CDDB3630B1B6E8001557C9 /* Debug */,
+				E6CDDB3730B1B6E8001557C9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

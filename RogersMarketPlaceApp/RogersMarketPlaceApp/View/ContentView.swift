@@ -14,10 +14,12 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                syncStatusBanner(isOnline: vm.isOnline)
+                syncStatusBanner()
                 listingsList()
             }
             .navigationTitle("Marketplace")
+            .navigationBarTitleDisplayMode(.large)
+            .searchable(text: $vm.searchText, prompt: "Search listings")
             .toolbar {
                 addListingButton()
             }
@@ -28,61 +30,75 @@ struct ContentView: View {
     }
 }
 
-extension ContentView {
+private extension ContentView {
     @ViewBuilder
-    func syncStatusBanner(isOnline: Bool) -> some View {
+    func syncStatusBanner() -> some View {
         HStack(spacing: 8) {
-            Text(isOnline ? "Online • All Synced" : "Offline • Changes Queued")
+            Text(vm.isOnline ? "Online • All Synced" : "Offline • Changes Queued")
                 .font(.caption.bold())
-            
+                .frame(height: 20)
+
             Spacer()
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
         .background(Color(.secondarySystemBackground))
     }
-    
+
     @ViewBuilder
     func listingsList() -> some View {
         List(vm.filteredListings) { item in
             listingRow(for: item)
         }
-        .searchable(text: $vm.searchText, prompt: "Search listings")
+        .animation(.snappy(duration: 0.25), value: vm.filteredListings.map(\.id))
+        .refreshable {
+            await vm.refreshProducts()
+        }
     }
-    
+
     @ViewBuilder
     func listingRow(for item: Listing) -> some View {
         HStack(spacing: 12) {
-            listingThumbnail(filename: item.imageFilename)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(item.title)
-                    .font(.headline)
-            }
+            listingThumbnail(for: item)
+
+            Text(item.title)
+                .font(.headline)
+
             Spacer()
+
             favoriteButton(for: item)
         }
     }
-    
+
     @ViewBuilder
-    func listingThumbnail(filename: String?) -> some View {
-        if let img = ImageStore.shared.loadImage(filename) {
-            Image(uiImage: img)
+    func listingThumbnail(for item: Listing) -> some View {
+        if let filename = item.imageFilename, let localImg = ImageStore.shared.loadImage(filename) {
+            Image(uiImage: localImg)
                 .resizable()
                 .scaledToFill()
                 .frame(width: 50, height: 50)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
+        } else if let remoteURL = item.remoteImageURL {
+            RemoteThumbnailView(
+                urlString: remoteURL,
+                cacheKey: "remote_\(item.id.uuidString).jpg"
+            )
         } else {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.gray.opacity(0.2))
-                .frame(width: 50, height: 50)
-                .overlay(
-                    Image(systemName: "tag")
-                        .foregroundStyle(.secondary)
-                )
+            placeholderThumbnail()
         }
     }
-    
+
+    @ViewBuilder
+    func placeholderThumbnail() -> some View {
+        RoundedRectangle(cornerRadius: 8)
+            .fill(Color.gray.opacity(0.2))
+            .frame(width: 50, height: 50)
+            .overlay(
+                Image(systemName: "tag")
+                    .foregroundStyle(.secondary)
+            )
+    }
+
     @ViewBuilder
     func favoriteButton(for item: Listing) -> some View {
         Button {
@@ -93,13 +109,41 @@ extension ContentView {
         }
         .buttonStyle(.plain)
     }
-    
+
     @ViewBuilder
     func addListingButton() -> some View {
         Button {
             showingAddSheet = true
         } label: {
             Image(systemName: "plus")
+        }
+    }
+}
+
+private struct RemoteThumbnailView: View {
+    let urlString: String
+    let cacheKey: String
+    @State private var image: UIImage?
+
+    var body: some View {
+        Group {
+            if let image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.2))
+                    .overlay(
+                        Image(systemName: "tag")
+                            .foregroundStyle(.secondary)
+                    )
+            }
+        }
+        .frame(width: 50, height: 50)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .task(id: urlString) {
+            image = await ImageStore.shared.loadRemoteThumbnail(urlString: urlString, cacheKey: cacheKey)
         }
     }
 }

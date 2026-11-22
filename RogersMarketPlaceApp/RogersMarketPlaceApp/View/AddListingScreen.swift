@@ -12,6 +12,7 @@ import SwiftUI
 struct AddListingScreen: View {
     @ObservedObject var vm: MarketplaceVM
     @Environment(\.dismiss) private var dismiss
+    @State private var showingCamera = false
 
     @State private var title = ""
     @State private var selectedPhoto: PhotosPickerItem?
@@ -36,6 +37,12 @@ struct AddListingScreen: View {
                         }
                     }
                 }
+                
+                Button {
+                    showingCamera = true
+                } label: {
+                    Label("Open Camera", systemImage: "camera")
+                }
 
                 if let selectedImage {
                     Image(uiImage: selectedImage)
@@ -54,6 +61,8 @@ struct AddListingScreen: View {
                     }
                     .disabled(!isValid)
                 }
+            }
+            .fullScreenCover(isPresented: $showingCamera) { CameraPicker(selectedImage: $selectedImage)
             }
         }
     }
