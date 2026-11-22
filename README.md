@@ -7,7 +7,6 @@ The application allows users to browse marketplace listings, search items, add n
 ## 🎬 Demo Video
 
 - 🎥 **Demo Video (`RogersMarketPlace.mov`):** [https://github.com/aishwaryajainwal/RogersMarketPlaceApp/releases/download/v1.0-demo/RogersMarketPlace.mov](https://github.com/aishwaryajainwal/RogersMarketPlaceApp/releases/download/v1.0-demo/RogersMarketPlace.mov)
-- 📦 **Release (`v1.0-demo` — iOS App demo):** [https://github.com/aishwaryajainwal/RogersMarketPlaceApp/releases/tag/v1.0-demo](https://github.com/aishwaryajainwal/RogersMarketPlaceApp/releases/tag/v1.0-demo)
 
 ## ✨ Features
 
