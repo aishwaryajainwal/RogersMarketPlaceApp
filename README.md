@@ -4,6 +4,11 @@ An **offline-first marketplace iOS application** built with **SwiftUI**, **Combi
 
 The application allows users to browse marketplace listings, search items, add new listings locally using the photo library or camera, toggle favorites, persist data locally to JSON, and synchronize pending changes when network connectivity is available.
 
+## 🎬 Demo Video
+
+- 🎥 **Demo Video (`RogersMarketPlace.mov`):** [https://github.com/aishwaryajainwal/RogersMarketPlaceApp/releases/download/v1.0-demo/RogersMarketPlace.mov](https://github.com/aishwaryajainwal/RogersMarketPlaceApp/releases/download/v1.0-demo/RogersMarketPlace.mov)
+- 📦 **Release (`v1.0-demo` — iOS App demo):** [https://github.com/aishwaryajainwal/RogersMarketPlaceApp/releases/tag/v1.0-demo](https://github.com/aishwaryajainwal/RogersMarketPlaceApp/releases/tag/v1.0-demo)
+
 ## ✨ Features
 
 - 📦 Product listing feed with pull-to-refresh (`refreshable`) and live search (`searchable`)
